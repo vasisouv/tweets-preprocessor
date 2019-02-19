@@ -4,15 +4,16 @@ from tests.test_cases_generator import TestCasesGenerator
 
 
 class Tests(unittest.TestCase):
+    def _generate_tests(self, module, method):
+        for test_case in getattr(TestCasesGenerator, module):
+            text = getattr(TwitterPreprocessor(text=test_case['init']), method)().text
+            yield self.assertEqual(test_case['expected'], text)
+
     def test_remove_urls(self):
-        for test_case in TestCasesGenerator.urls:
-            preprocessor = TwitterPreprocessor(text=test_case['init'])
-            self.assertEqual(test_case['expected'], preprocessor.remove_urls().text)
+        self._generate_tests('urls', 'remove_urls')
 
     def test_remove_punctuation(self):
-        for test_case in TestCasesGenerator.punctuation:
-            preprocessor = TwitterPreprocessor(text=test_case['init'])
-            self.assertEqual(test_case['expected'], preprocessor.remove_punctuation().text)
+        self._generate_tests('punctuation', 'remove_punctuation')
 
     # def test_remove_urls_one_at_the_end(self):
     #     self.assertEqual('Delighted to have been awarded the first ever TerraPMC Fellowship '
