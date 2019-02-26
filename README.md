@@ -1,32 +1,34 @@
-## PlasticTwist Crowdsourcing Twitter Preprocessor
+## Tweets Preprocessor
 
 <p align="center">
   <br>
-    <img width="200" src="./ptwist_logo.png">
-    <img width="200" src="./twitter_logo.png">
+    <img width="100" src="./ptwist_logo.png">
+    <img width="100" src="./twitter_logo.png">
   <br>
   <br>
 </p>
 
-> Repo containing the Twitter preprocessor module, developed by the AUTH OSWinds team
+The tweets preprocessor module, developed by the AUTH team 
+as part of the [PlasticTwist Crowdsourcing module](https://crowdsourcing.plastictwist.com)
 
 ## Installation
-The `tweets-preprocessor` module is not yet up in PyPI, thus requiring manual import.
+The `tweets-preprocessor` module is not yet available trough PyPI, thus requiring manual import.
 
 For minimal setup for English you need to install `profanity-filter` with is bundled with `spacy` and download `spacy`
 model for tokenization and lemmatization as well as nltk:
 ```
 $ pip install -r requirements.txt
-$ > run utils/requirements_installer.py
 ```
+then execute `utils/requirements_installer.py` to install additional dependencies automatically.
+
 
 ## Usage
 
-The module is created in a functional way with a Fluent API. Thus, the user
-can either call individual methods or use the `full_preprocess` method to
-apply all of our preprocessing methods to his text.
+The module was developed in a functional way and features a Fluent API. This allows the user
+to either call individual pre-processing methods or use the `full_preprocess` method to
+apply all of the pre-processing methods to his text.
 
-The list of methods that can be used are:
+The list of methods that can currently be used are:
 
 * `remove_urls` - Removes all urls (e.g. 'https://ptwist.eu')
 * `remove_mentions` - Removes all mentions (e.g. '@PlasticTwistBot')
@@ -44,13 +46,36 @@ The list of methods that can be used are:
     
 ### Examples
 
+#### Using specific methods
+
 ```python
 from twitter_preprocessor import TwitterPreprocessor
 
-p = TwitterPreprocessor('Some text to be preprocessed')
+p = TwitterPreprocessor('Some @ptwist text to be preprocessed. It contains 2 sentences. Best text 2019!')
+
+# Picking specific methods
+p.remove_mentions().remove_punctuation().remove_numbers(preserve_years=True).remove_blank_spaces()
+print(p.text)
+# 'Some text to be preprocessed It contains sentences Best text 2019'
 ```
 
-## Credits
-English profane word dictionary: https://github.com/areebbeigh/profanityfilter/ (author Areeb Beigh).
+#### Full pre-processing
 
-Russian profane word dictionary: https://github.com/PixxxeL/djantimat (author Ivan Sergeev).
+```python
+from twitter_preprocessor import TwitterPreprocessor
+
+p = TwitterPreprocessor('RT @ptwist This text contains mentions, urls, some Twitter words and some stopwords to be preprocessed via https://example.com.')
+
+# Picking specific methods
+p.fully_preprocess()
+print(p.text)
+# 'This text contains mentions stopwords preprocessed'
+```
+
+
+## License
+
+This project is licensed under the [MIT license](http://opensource.org/licenses/MIT).
+
+## Credits
+Developed and maintained by: [vasisouv](https://github.com/vasisouv), [alextsil](https://github.com/alextsil), [idimitriadis](https://github.com/idimitriadis)

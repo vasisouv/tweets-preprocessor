@@ -3,7 +3,7 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk import re
-from utils import regex
+from helpers import regex, utils
 from profanity_filter import ProfanityFilter
 
 
@@ -19,13 +19,6 @@ class TwitterPreprocessor:
         pf.censor_char = ' '
         pf.censor_whole_words = True
         return pf
-
-    @staticmethod
-    def _is_year(text):
-        if int(text) < 1900 or int(text) > 2100:
-            return True
-        else:
-            return False
 
     def fully_preprocess(self):
         return self \
@@ -86,15 +79,24 @@ class TwitterPreprocessor:
         self.remove_blank_spaces()
         return self
 
-    def remove_numbers(self, remove_years=True):
+    def remove_numbers(self, preserve_years=False):
         text_list = self.text.split(' ')
         for text in text_list:
             if text.isnumeric():
-                if remove_years:
-                    text_list.remove(text)
-                else:
-                    if self._is_year(text):
+                if preserve_years:
+                    if utils.is_year(text):
                         text_list.remove(text)
+                else:
+                    text_list.remove(text)
 
         self.text = ' '.join(text_list)
         return self
+
+
+if __name__ == '__main__':
+    p = TwitterPreprocessor('RT @ptwist This text contains mentions, urls, some Twitter words and some stopwords to be preprocessed via https://example.com.')
+
+    # Picking specific methods
+    p.fully_preprocess()
+
+    print(p.text)
