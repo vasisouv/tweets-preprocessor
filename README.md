@@ -11,6 +11,8 @@
 The tweets preprocessor module, developed by the AUTH team 
 as part of the [PlasticTwist Crowdsourcing module](https://crowdsourcing.plastictwist.com)
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) 
+
 ## Installation
 The `tweets-preprocessor` module is not yet available trough PyPI, thus requiring manual import.
 
