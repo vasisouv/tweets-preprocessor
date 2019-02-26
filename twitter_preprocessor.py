@@ -1,4 +1,6 @@
 import string
+
+import nltk
 from nltk.corpus import stopwords
 from nltk import re
 from utils import regex
@@ -18,8 +20,16 @@ class TwitterPreprocessor:
         pf.censor_whole_words = True
         return pf
 
+    @staticmethod
+    def _is_year(text):
+        if int(text) < 1900 or int(text) > 2100:
+            return True
+        else:
+            return False
+
     def fully_preprocess(self):
-        return self.remove_urls() \
+        return self \
+            .remove_urls() \
             .remove_mentions() \
             .remove_hashtags() \
             .remove_twitter_reserved_words() \
@@ -27,8 +37,8 @@ class TwitterPreprocessor:
             .remove_single_letter_words() \
             .remove_blank_spaces() \
             .remove_stopwords() \
-            .remove_profane_words()
-        # .remove_numbers()
+            .remove_profane_words() \
+            .remove_numbers()
 
     def remove_urls(self):
         self.text = re.sub(pattern=regex.get_url_patern(), repl='', string=self.text)
@@ -61,8 +71,14 @@ class TwitterPreprocessor:
     def remove_stopwords(self, extra_stopwords=None):
         if extra_stopwords is None:
             extra_stopwords = []
-        text_list = list(self.text)
-        self.text = set(text_list) - set(stopwords.words('english')) - set(extra_stopwords)
+        text = nltk.word_tokenize(self.text)
+        stop_words = set(stopwords.words('english'))
+
+        new_sentence = []
+        for w in text:
+            if w not in stop_words and w not in extra_stopwords:
+                new_sentence.append(w)
+        self.text = ' '.join(new_sentence)
         return self
 
     def remove_profane_words(self):
@@ -70,20 +86,15 @@ class TwitterPreprocessor:
         self.remove_blank_spaces()
         return self
 
-    # def remove_numbers(self, remove_years=False):
-    #     text_list = list(self.text)
-    #     for text in text_list:
-    #         if text.isnumeric():
-    #             if remove_years:
-    #                 if int(text) < 1900 or int(text) > 2100:
-    #                     text_list.remove(text)
-    #             else:
-    #                 text_list.remove(text)
-    #
-    #     self.text = ''.join(text_list)
-    #     return self
+    def remove_numbers(self, remove_years=True):
+        text_list = self.text.split(' ')
+        for text in text_list:
+            if text.isnumeric():
+                if remove_years:
+                    text_list.remove(text)
+                else:
+                    if self._is_year(text):
+                        text_list.remove(text)
 
-# if __name__ == '__main__':
-#     p = TwitterPreprocessor(text='This is bullshit dude')
-#     p.remove_profane_words()
-#     print(p.text)
+        self.text = ' '.join(text_list)
+        return self

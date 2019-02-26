@@ -30,6 +30,9 @@ class Tests(unittest.TestCase):
     def test_remove_blank_spaces(self):
         self._generate_tests(module='blank_spaces', method='remove_blank_spaces')
 
+    def test_remove_stopwords(self):
+        self._generate_tests(module='stopwords', method='remove_stopwords')
+
     def test_remove_profane_words(self):
         self._generate_tests(module='profane_words', method='remove_profane_words')
 

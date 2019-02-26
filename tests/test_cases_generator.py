@@ -51,3 +51,17 @@ class TestCasesGenerator:
             'expected': 'RT Lorem ipsum good dog has no dolor sit @test.'
         }
     ]
+
+    stopwords = [
+        {
+            'case': 'This is a nice evening here at the bar.',
+            'expected': 'This nice evening bar .'
+        }
+    ]
+
+    profane_words = [
+        {
+            'case': 'This fucking evening at this shit bar is the worst.',
+            'expected': 'This evening at this bar is the worst.'
+        }
+    ]
