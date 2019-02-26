@@ -53,7 +53,6 @@ from twitter_preprocessor import TwitterPreprocessor
 
 p = TwitterPreprocessor('Some @ptwist text to be preprocessed. It contains 2 sentences. Best text 2019!')
 
-# Picking specific methods
 p.remove_mentions().remove_punctuation().remove_numbers(preserve_years=True).remove_blank_spaces()
 print(p.text)
 # 'Some text to be preprocessed It contains sentences Best text 2019'
@@ -66,7 +65,6 @@ from twitter_preprocessor import TwitterPreprocessor
 
 p = TwitterPreprocessor('RT @ptwist This text contains mentions, urls, some Twitter words and some stopwords to be preprocessed via https://example.com.')
 
-# Picking specific methods
 p.fully_preprocess()
 print(p.text)
 # 'This text contains mentions stopwords preprocessed'
