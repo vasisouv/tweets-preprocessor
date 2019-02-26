@@ -67,7 +67,7 @@ p = TwitterPreprocessor('RT @ptwist This text contains mentions, urls, some Twit
 
 p.fully_preprocess()
 print(p.text)
-# 'This text contains mentions stopwords preprocessed'
+# 'This text contains mentions urls Twitter words stopwords preprocessed'
 ```
 
 
