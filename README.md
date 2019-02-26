@@ -43,8 +43,8 @@ The list of methods that can currently be used are:
     * has an `extra_stopwords` parameter (list) that allows users to add extra stopwords
 * `remove_profane_words` - Removes profane words
 * `remove_numbers` - Removes numbers (e.g. '2', '999')
-    * has an `remove_years` parameter (boolean) that allows users to choose whether or not
-    years should be deleted.
+    * has an `preserve_years` parameter (boolean) that allows users to choose whether or not
+    years should be removed.
     
 ### Examples
 
