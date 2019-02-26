@@ -1,58 +1,24 @@
 import string
-
-from nltk import re
-import nltk
-
 from nltk.corpus import stopwords
-
-regex_patterns = {
-    'url': re.compile(
-        r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z'
-        r'0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})')
-}
-
-
-def get_emojis_pattern():
-    try:
-        # UCS-4
-        emojis_pattern = re.compile(u'([\U00002600-\U000027BF])|([\U0001f300-\U0001f64F])|([\U0001f680-\U0001f6FF])')
-    except re.error:
-        # UCS-2
-        emojis_pattern = re.compile(
-            u'([\u2600-\u27BF])|([\uD83C][\uDF00-\uDFFF])|([\uD83D][\uDC00-\uDE4F])|([\uD83D][\uDE80-\uDEFF])')
-    return emojis_pattern
-
-
-def get_hashtags_pattern():
-    return re.compile(r'#\w*')
-
-
-def get_single_letter_words_pattern():
-    return re.compile(r'(?<![\w\-])\w(?![\w\-])')
-
-
-def get_blank_spaces_pattern():
-    return re.compile(r'\s{2,}|\t')
-
-
-def get_twitter_reserved_words_pattern():
-    return re.compile(r'(RT|rt|FAV|fav|VIA|via)')
-
-
-def get_mentions_pattern():
-    return re.compile(r'@\w*')
-
-
-def get_facebook_reserved_words_pattern():
-    return re.compile(r'^(TODO|STH|ELSE)')
+from nltk import re
+from utils import regex
+from profanity_filter import ProfanityFilter
 
 
 class TwitterPreprocessor:
 
     def __init__(self, text: str):
         self.text = text
+        self.pf = self._init_profanity_filter()
 
-    def full_preprocess(self):
+    @staticmethod
+    def _init_profanity_filter():
+        pf = ProfanityFilter()
+        pf.censor_char = ' '
+        pf.censor_whole_words = True
+        return pf
+
+    def fully_preprocess(self):
         return self.remove_urls() \
             .remove_mentions() \
             .remove_hashtags() \
@@ -61,11 +27,11 @@ class TwitterPreprocessor:
             .remove_single_letter_words() \
             .remove_blank_spaces() \
             .remove_stopwords() \
-            .remove_profane_words() \
-            .remove_numbers()
+            .remove_profane_words()
+        # .remove_numbers()
 
     def remove_urls(self):
-        self.text = re.sub(pattern=regex_patterns['url'], repl='', string=self.text)
+        self.text = re.sub(pattern=regex.get_url_patern(), repl='', string=self.text)
         return self
 
     def remove_punctuation(self):
@@ -73,57 +39,51 @@ class TwitterPreprocessor:
         return self
 
     def remove_mentions(self):
-        self.text = re.sub(pattern=regex_patterns.get_mentions_pattern(), repl='', string=self.text)
+        self.text = re.sub(pattern=regex.get_mentions_pattern(), repl='', string=self.text)
         return self
 
     def remove_hashtags(self):
-        self.text = re.sub(pattern=regex_patterns.get_hashtags_pattern(), repl='', string=self.text)
+        self.text = re.sub(pattern=regex.get_hashtags_pattern(), repl='', string=self.text)
         return self
 
     def remove_twitter_reserved_words(self):
-        self.text = re.sub(pattern=re.compile(r'(RT|rt|FAV|fav|VIA|via|AMP|amp)'), repl='', string=self.text)
+        self.text = re.sub(pattern=regex.get_twitter_reserved_words_pattern(), repl='', string=self.text)
         return self
 
     def remove_single_letter_words(self):
-        self.text = re.sub(pattern=regex_patterns.get_single_letter_words_pattern(), repl='', string=self.text)
+        self.text = re.sub(pattern=regex.get_single_letter_words_pattern(), repl='', string=self.text)
         return self
 
     def remove_blank_spaces(self):
-        self.text = re.sub(pattern=regex_patterns.get_blank_spaces_pattern(), repl=' ', string=self.text)
+        self.text = re.sub(pattern=regex.get_blank_spaces_pattern(), repl=' ', string=self.text)
         return self
 
-    def remove_stopwords(self, extra_stopwords):
+    def remove_stopwords(self, extra_stopwords=None):
+        if extra_stopwords is None:
+            extra_stopwords = []
         text_list = list(self.text)
-        self.text = set(text_list) - set(stopwords.words(self.language)) - set(extra_stopwords)
+        self.text = set(text_list) - set(stopwords.words('english')) - set(extra_stopwords)
         return self
 
     def remove_profane_words(self):
-        text_list = list(self.text)
-        self.text = set(text_list) - set(self._get_profane_words())
+        self.text = self.pf.censor(self.text)
+        self.remove_blank_spaces()
         return self
 
-    # def __tokenize_to_list__(self, text):
-    #     tokens = nltk.wordpunct_tokenize(text)
-    #     text = nltk.Text(tokens)
-    #     return [w.lower() for w in text if w.isalpha() or w.isalnum()]
+    # def remove_numbers(self, remove_years=False):
+    #     text_list = list(self.text)
+    #     for text in text_list:
+    #         if text.isnumeric():
+    #             if remove_years:
+    #                 if int(text) < 1900 or int(text) > 2100:
+    #                     text_list.remove(text)
+    #             else:
+    #                 text_list.remove(text)
+    #
+    #     self.text = ''.join(text_list)
+    #     return self
 
-    def remove_numbers(self):
-        text_list = list(self.text)
-        for text in text_list:
-            if text.isnumeric():
-                # if the number is not a year, remove it
-                if int(text) < 1900 or int(text) > 2100:
-                    text_list.remove(text)
-
-        self.text = ''.join(text_list)
-        return self
-
-    def _get_profane_words(self):
-        if self.language == 'en':
-            return vars.en_profane_words
-        elif self.language == 'nl':
-            return vars.nl_profane_words
-        elif self.language == 'de':
-            return vars.de_profane_words
-        else:
-            return vars.el_profane_words
+# if __name__ == '__main__':
+#     p = TwitterPreprocessor(text='This is bullshit dude')
+#     p.remove_profane_words()
+#     print(p.text)
