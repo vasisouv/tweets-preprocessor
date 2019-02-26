@@ -2,8 +2,8 @@
 
 <p align="center">
   <br>
-    <img width="200" src="./res/ptwist_logo.png">
-    <img width="200" src="./res/twitter_logo.png">
+    <img width="200" src="./ptwist_logo.png">
+    <img width="200" src="./twitter_logo.png">
   <br>
   <br>
 </p>
