@@ -91,12 +91,3 @@ class TwitterPreprocessor:
 
         self.text = ' '.join(text_list)
         return self
-
-
-if __name__ == '__main__':
-    p = TwitterPreprocessor('RT @ptwist This text contains mentions, urls, some Twitter words and some stopwords to be preprocessed via https://example.com.')
-
-    # Picking specific methods
-    p.fully_preprocess()
-
-    print(p.text)
