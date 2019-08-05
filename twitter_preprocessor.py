@@ -3,7 +3,9 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk import re
-from helpers import regex
+
+MIN_YEAR = 1900
+MAX_YEAR = 2100
 
 
 def get_url_patern():
@@ -44,7 +46,7 @@ def get_mentions_pattern():
 
 
 def is_year(text):
-    if int(text) < 1900 or int(text) > 2100:
+    if (len(text) == 3 or len(text) == 4) and (MIN_YEAR < len(text) < MAX_YEAR):
         return True
     else:
         return False
@@ -119,7 +121,7 @@ class TwitterPreprocessor:
         for text in text_list:
             if text.isnumeric():
                 if preserve_years:
-                    if is_year(text):
+                    if not is_year(text):
                         text_list.remove(text)
                 else:
                     text_list.remove(text)
