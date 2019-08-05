@@ -33,9 +33,6 @@ class Tests(unittest.TestCase):
     def test_remove_stopwords(self):
         self._generate_tests(module='stopwords', method='remove_stopwords')
 
-    def test_remove_profane_words(self):
-        self._generate_tests(module='profane_words', method='remove_profane_words')
-
 
 if __name__ == '__main__':
     unittest.main()

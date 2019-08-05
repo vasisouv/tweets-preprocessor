@@ -4,21 +4,12 @@ import nltk
 from nltk.corpus import stopwords
 from nltk import re
 from helpers import regex, utils
-from profanity_filter import ProfanityFilter
 
 
 class TwitterPreprocessor:
 
     def __init__(self, text: str):
         self.text = text
-        self.pf = self._init_profanity_filter()
-
-    @staticmethod
-    def _init_profanity_filter():
-        pf = ProfanityFilter()
-        pf.censor_char = ' '
-        pf.censor_whole_words = True
-        return pf
 
     def fully_preprocess(self):
         return self \

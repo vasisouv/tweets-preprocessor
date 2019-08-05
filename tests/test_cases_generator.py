@@ -58,10 +58,3 @@ class TestCasesGenerator:
             'expected': 'This nice evening bar .'
         }
     ]
-
-    profane_words = [
-        {
-            'case': 'This fucking evening at this shit bar is the worst.',
-            'expected': 'This evening at this bar is the worst.'
-        }
-    ]
