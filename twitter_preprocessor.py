@@ -67,7 +67,6 @@ class TwitterPreprocessor:
             .remove_single_letter_words() \
             .remove_blank_spaces() \
             .remove_stopwords() \
-            .remove_profane_words() \
             .remove_numbers()
 
     def remove_urls(self):
@@ -111,11 +110,6 @@ class TwitterPreprocessor:
         self.text = ' '.join(new_sentence)
         return self
 
-    def remove_profane_words(self):
-        self.text = self.pf.censor(self.text)
-        self.remove_blank_spaces()
-        return self
-
     def remove_numbers(self, preserve_years=False):
         text_list = self.text.split(' ')
         for text in text_list:
@@ -127,4 +121,8 @@ class TwitterPreprocessor:
                     text_list.remove(text)
 
         self.text = ' '.join(text_list)
+        return self
+
+    def lowercase(self):
+        self.text = self.text.lower()
         return self
