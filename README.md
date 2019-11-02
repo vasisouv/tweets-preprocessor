@@ -16,8 +16,6 @@ as part of the [PlasticTwist Crowdsourcing module](https://crowdsourcing.plastic
 ## Installation
 The `tweets-preprocessor` module is not yet available trough PyPI, thus requiring manual import.
 
-For minimal setup for English you need to install `profanity-filter` with is bundled with `spacy` and download `spacy`
-model for tokenization and lemmatization as well as nltk:
 ```
 $ pip install -r requirements.txt
 ```
