@@ -73,7 +73,7 @@ print(p.text)
 
 ## License
 
-This project is licensed under the [MIT license](http://opensource.org/licenses/MIT).
+This project is licensed under the [GPL 3.0 license](https://opensource.org/licenses/GPL-3.0).
 
 ## Credits
 Developed and maintained by: [vasisouv](https://github.com/vasisouv), [alextsil](https://github.com/alextsil), [idimitriadis](https://github.com/idimitriadis)
