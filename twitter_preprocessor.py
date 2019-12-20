@@ -44,6 +44,16 @@ def get_twitter_reserved_words_pattern():
 def get_mentions_pattern():
     return re.compile(r'@\w*')
 
+def get_negations_pattern():
+    negations_ = {"isn't": "is not", "can't": "can not", "couldn't": "could not", "hasn't": "has not",
+                  "hadn't": "had not", "won't": "will not",
+                  "wouldn't": "would not", "aren't": "are not",
+                  "haven't": "have not", "doesn't": "does not", "didn't": "did not",
+                  "don't": "do not", "shouldn't": "should not", "wasn't": "was not", "weren't": "were not",
+                  "mightn't": "might not",
+                  "mustn't": "must not"}
+    return re.compile(r'\b(' + '|'.join(negations_.keys()) + r')\b')
+
 
 def is_year(text):
     if (len(text) == 3 or len(text) == 4) and (MIN_YEAR < len(text) < MAX_YEAR):
@@ -125,4 +135,8 @@ class TwitterPreprocessor:
 
     def lowercase(self):
         self.text = self.text.lower()
+        return self
+    
+    def handle_negations(self):  
+        self.text = re.sub(pattern=get_negations_pattern(), repl='', string=self.text)
         return self
